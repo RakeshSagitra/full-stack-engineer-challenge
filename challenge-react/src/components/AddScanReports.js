@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useState } from 'react';
 import ScanReportService from '../ScanReportService';
 import TextField from '@material-ui/core/TextField';
 import Link from 'react-router-dom/Link'
@@ -11,9 +11,11 @@ class AddScanReport extends React.Component {
         this.state = {
             status: '',
             repositoryName: '',
-            ruleId: null,
-            description: '',
-            severity: '',
+            findings: {
+                ruleId: '',
+                description: '',
+                severity: ''
+            },
             queuedAt: '',
             scanningAt: '',
             finishedAt: ''
@@ -21,14 +23,6 @@ class AddScanReport extends React.Component {
     }
 
     addScanReport = () => {
-        this.state.findings = {
-            ruleId: this.state.ruleId,
-            description: this.state.description,
-            severity: this.state.severity
-        }
-        delete this.state.ruleId
-        delete this.state.description
-        delete this.state.severity
         ScanReportService.create(this.state)
             .then(json => {
                 if (json.data.statusCode === 200 || json.data.statusCode === 201) {
@@ -44,9 +38,16 @@ class AddScanReport extends React.Component {
     }
 
     handleChange = (e) => {
-        console.log(e.target.name)
-        console.log(e.target.value)
-        this.setState({ [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        this.state[name] = value;
+        this.setState({ name: value });
+    }
+
+
+    handleFindingsChange = (e) => {
+        const { name, value } = e.target;
+        this.state.findings[name] = value;
+        this.setState(this.state);
     }
 
     render() {
@@ -84,40 +85,6 @@ class AddScanReport extends React.Component {
                                             value={this.state.repositoryName}
                                         />
                                     </div>
-                                    <div className="form-group">
-
-                                        <TextField
-                                            id="standard-basic"
-                                            label="Rule Id"
-                                            margin="normal"
-                                            name="ruleId"
-                                            className="form-control textfield"
-                                            onChange={this.handleChange}
-                                            value={this.state.ruleId}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <TextField
-                                            id="standard-basic"
-                                            label="Description"
-                                            margin="normal"
-                                            name="description"
-                                            className="form-control textfield"
-                                            onChange={this.handleChange}
-                                            value={this.state.description}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <TextField
-                                            id="standard-basic"
-                                            label="Severity"
-                                            margin="normal"
-                                            name="severity"
-                                            className="form-control textfield"
-                                            onChange={this.handleChange}
-                                            value={this.state.severity}
-                                        />
-                                    </div>
 
                                     <div className="form-group">
                                         <TextField
@@ -126,7 +93,7 @@ class AddScanReport extends React.Component {
                                             name="queuedAt"
                                             type="datetime-local"
                                             value={this.state.queuedAt}
-                                            defaultValue="2019-11-13T10:30"
+                                            defaultValue={new Date()}
                                             className="form-control textfield"
                                             onChange={this.handleChange}
                                             InputLabelProps={{
@@ -140,9 +107,9 @@ class AddScanReport extends React.Component {
                                             id="datetime-local"
                                             label="Scanning At"
                                             name="scanningAt"
-                                            value={this.state.scanningAt}
                                             type="datetime-local"
-                                            defaultValue="2019-11-13T10:30"
+                                            defaultValue={new Date()}
+                                            value={this.state.scanningAt}
                                             className="form-control textfield"
                                             onChange={this.handleChange}
                                             InputLabelProps={{
@@ -156,14 +123,46 @@ class AddScanReport extends React.Component {
                                             id="datetime-local"
                                             label="Finished At"
                                             name="finishedAt"
-                                            value={this.state.finishedAt}
                                             type="datetime-local"
-                                            defaultValue="2019-11-13T10:30"
+                                            defaultValue={new Date()}
                                             className="form-control textfield"
+                                            value={this.state.finishedAt}
                                             onChange={this.handleChange}
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
+                                        />
+                                    </div>
+                                    Findings :
+                                    <div className="form-group">
+                                        <TextField
+                                            id="standard-basic"
+                                            label="Rule Id"
+                                            margin="normal"
+                                            name="ruleId"
+                                            className="form-control textfield"
+                                            onChange={this.handleFindingsChange}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <TextField
+                                            id="standard-basic"
+                                            label="Description"
+                                            margin="normal"
+                                            name="description"
+                                            className="form-control textfield"
+                                            onChange={this.handleFindingsChange}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <TextField
+                                            id="standard-basic"
+                                            label="Severity"
+                                            margin="normal"
+                                            name="severity"
+                                            className="form-control textfield"
+                                            onChange={this.handleFindingsChange}
+                                            value={this.state.findings.severity}
                                         />
                                     </div>
                                     <div>
