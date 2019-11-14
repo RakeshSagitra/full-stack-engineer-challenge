@@ -19,15 +19,6 @@ let styles = {
     marginTop: '100px'
 };
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%',
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-});
 class ScanReportDetails extends Component {
 
     constructor(props) {
@@ -40,12 +31,6 @@ class ScanReportDetails extends Component {
             .then(response => this.setState({ details: response.data ? response.data.data : {} }))
             .catch(console.log)
     }
-    tabRow() {
-        return this.state.items.map(function (object, i) {
-            return <TableRow obj={object} key={i} />;
-        })
-    }
-
 
     render() {
         // const classes = useStyles();
