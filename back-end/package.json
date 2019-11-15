@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon --inspect=0.0.0.0:9229 ./bin/dev"
+    "db_setup": "sequelize db:migrate",
+    "start_app": "nodemon --exec babel-node main.js",
+    "start": "npm run db_setup && npm run start_app"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
+    "@babel/node": "^7.7.0",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-decorators": "^7.1.6",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",

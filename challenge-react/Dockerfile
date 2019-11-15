@@ -5,11 +5,11 @@ WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
+RUN npm install -g react-scripts@3.2.0 --silent
 RUN npm install
 
-# Bundle app source
 COPY . /usr/src/app
+RUN npm run build
 
-EXPOSE 4000
-ENTRYPOINT ["bin/create_db.sh"]
+EXPOSE 3000
 CMD [ "npm", "start" ]

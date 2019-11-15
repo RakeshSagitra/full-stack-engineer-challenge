@@ -44,7 +44,7 @@ const config = convict({
       env: 'DB_HOST'
     },
     port: {
-      default: 5432,
+      default: 5555,
       env: 'DB_PORT'
     }
   }

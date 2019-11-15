@@ -1,23 +1,57 @@
 version: '3'
+networks: 
+  test_network:
 
 services:
+  # database:
+  #   container_name: database
+  #   image: postgres:11.2-alpine
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./docker_volumes_data/postgres_data:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_DB: security_scan_result
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5555:5432"
+  #   networks: 
+  #     - test_network
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ~/dbdata:/var/lib/postgresql/data
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: security_scan_result
+    networks:
+      - test_network
+
   node-api:
     build:
       context: ./back-end
       dockerfile: Dockerfile
     container_name: node-api
-    restart: unless-stopped
+    restart: always
     environment:
-      - DB_NAME=$DB_NAME
-      - DB_USER=$DB_USER
-      - DB_PASSWORD=$DB_PASSWORD
-      - DB_HOST=$DB_HOST_URL
-      - DB_PORT=$DB_PORT
+      - DB_NAME=security_scan_result
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5555
     ports:
       - "4000:4000"
+    depends_on:
+      - postgres
     volumes:
-      - ./back-end:/usr/src/app
-      - ./back-end/node_modules:/usr/src/app/node_modules
+      - ./back-end:/home/node/app
+      - ./back-end/node_modules:/home/node/app/node_modules
+    networks: 
+      - test_network
+
   web-app:
     build:
       context: ./challenge-react
@@ -25,11 +59,13 @@ services:
     container_name: web-app
     restart: unless-stopped
     environment:
-      - API_URL=$API_URL
+      - API_URL=node-api:4000
     ports:
       - "3000:3000"
     depends_on:
       - node-api
     volumes:
-      - ./challenge-react:/usr/src/app
-      - ./challenge-react/node_modules:/usr/src/app/node_modules
+      - ./challenge-react:/home/node/webapp
+      - ./challenge-react/node_modules:/home/node/webapp/node_modules
+    networks: 
+      - test_network
