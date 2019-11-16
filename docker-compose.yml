@@ -3,20 +3,6 @@ networks:
   test_network:
 
 services:
-  # database:
-  #   container_name: database
-  #   image: postgres:11.2-alpine
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./docker_volumes_data/postgres_data:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_DB: security_scan_result
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #   ports:
-  #     - "5555:5432"
-  #   networks: 
-  #     - test_network
   postgres:
     image: postgres:latest
     volumes:
